@@ -1,204 +1,236 @@
-<font size=7><font color=CornflowerBlue>Infrared-Serial</font></h1></font>
-==========================================================================
+**其他语言版本: [English](README_en.md) | [中文](README.md)**
 
-**Read this in other languages: [English](README.md), [中文](README_zh.md).**
-**其他语言版本: [English](README.md), [中文](README_zh.md).**
+---
 
-Infrared thermal imaging temperature measurement module
--------------------------------------------------------
-User's Guide
-------------
+# OpenThermal 红外热成像系统 (v3.0.0) - 用户使用手册
 
-Please make sure to read this manual before using this module.
+> **当前版本**：v3.0.0  
+> OpenThermal 是一款高性能红外热成像测温系统。支持**无线传输**与 **Type-C 有线传输**，提供全场景跨平台客户端生态：支持**全平台局域网网页在线实时查看（免安装）**、**Windows 桌面客户端**以及**可安装的 Android 手机 APK**，满足电脑、手机、平板在不同环境下的红外测温与热像观察需求。
 
+---
 
-<div align=center><img src="./Infrared-pro/photo/20241031235112.jpg" width="50%" height="50%" ></div>
-<div align=center>Infrared-pro</div>
-<div align=center>Touch screen and battery with all mini's function.</div>
+## 软件包与应用快速入口
 
---------------------------------------------
+本发布包已内置各个平台的客户端与配套烧录工具，可直接点击下方链接打开或安装：
 
-<div align=center><img src="./Infrared-mini/photo/20241031234857.jpg" width="50%" height="50%" ></div>
-<div align=center>Infrared-mini</div>
-<div align=center>No screen, using WiFi screen cast. this for geeks only.</div>
+| 应用平台 / 工具 | 文件路径与直接链接 | 说明 |
+| :--- | :--- | :--- |
+| 💻 **Windows 桌面端** | [`windows/OpenThermal.exe`](windows/OpenThermal.exe) | 独立桌面程序，即开即用（包含完整 [`windows/`](windows/) 运行库） |
+| 📱 **Android 手机端** | [`android/OpenThermal.apk`](android/OpenThermal.apk) | 安卓通用安装包（各芯片架构分包见 [`android/`](android/) 目录） |
+| 🛠️ **固件烧录工具** | [`烧录工具.exe`](烧录工具.exe) | 单文件量产/烧录工具，用于刷机、备份与恢复 |
+| 🌐 **全平台在线控制台** | `http://openthermal.local` 或 `http://192.168.4.1` | 免安装任何客户端，同一局域网任意浏览器直连 |
 
+---
 
-## Before using the module
-Thank you for choosing “Infrared-Serial”, the infrared thermal imaging temperature measurement module. This manual explains how to operate the infrared thermal imaging temperature measurement module and the precautions that need to be observed during the operation. Please make sure to read this instruction manual before use.
+## 传输方式与终端支持
 
-**Please note:**
-- This manual is protected by copyright law, without the written consent of the copyright owner, it is not allowed to copy or reproduce this manual all or part of the book. However, photocopies of this manual may be made for operating the equipment.
-- The content of this manual may be changed at any time without notice.
-- Welcome to correct the unclear semantics, errors, omissions or missing pages of this manual.
-- Do not perform any operations on the equipment that are not mentioned in this manual, so as not to cause malfunction or accident.
-- This module must not be used to endanger any wildlife.
-- The company will not be responsible for the consequences caused by unauthorized operation.
+- **连接传输方式**：
+  - **无线传输 (Wi-Fi)**：支持设备自带 AP 热点无线直连，也支持接入室内 Wi-Fi 路由器实现局域网无线流转。
+  - **有线传输 (Type-C USB)**：支持通过 Type-C 数据线有线直连电脑，或通过 Type-C OTG 线有线直连安卓手机，即插即用、延迟极低。
+- **全平台终端覆盖**：
+  - **局域网网页在线查看（全平台免安装）**：电脑、手机、平板（Windows / macOS / Linux / iOS / Android）无需安装任何应用，打开现代浏览器即可在线查看实时热像画面。
+  - **Windows 桌面客户端**：提供独立的桌面应用程序，支持 USB 有线高速直连与 Wi-Fi 无线局域网接入。
+  - **Android 手机客户端 (APK)**：支持在安卓手机上安装独立 APK，支持手机 USB-OTG 有线即插即用与 Wi-Fi 无线连接。
 
+---
 
-## Product Introduction
-### Application Scenario
-The Infrared-Serial, is a 32\*32 pixel thermopile infrared array temperature measurement module with high performance and high-quality digital signals integrated with optical lenses. It can be widely used in human body temperature measurement, heat source tracking, experimental observation, circuit maintenance, robots and other scenarios.
+## 核心功能介绍
 
-The module has excellent platform compatibility and can run on Windows, Mac, Linux, Android, IOS , ROS and other operating systems, as long as the platform supports Wi-Fi and has a modern browser . And there is no need to download any APP, just open the browser to display the thermal imaging screen, bringing better display effect and interactive experience.
+1. **高画质热像平滑成像**：
+   - 采用多种平滑插值滤波算法（推荐使用 `B-Spline` 样条滤波，同时提供 `Lanczos3`、`Gaussian` 等 12 种滤波核），将传感器点阵平滑重采样为高分辨率图像，画质过渡自然平滑。
+2. **多模式伪彩调色板**：
+   - 内置 14 套工业与医疗调色板（包含 `Ironbow` 铁红、`Rainbow` 彩虹、`Classic` 经典、`White-Hot` 白热、`Black-Hot` 黑热、`Medical` 医疗等），支持颜色反转，适应不同的观察背景。
+3. **全自动温度跟踪与标线**：
+   - 画面实时自动寻找并追踪**最高温**（红色十字）、**最低温**（蓝色十字）以及**中心定点**（绿色十字），并在界面实时显示全画幅平均温度。
+4. **自定义定点测温与温度趋势曲线**：
+   - 支持在画面任意位置点击或拖动放置定点测温探针，精确测量指定点温度；
+   - 具备**连续温度曲线记录**功能，可实时绘制温度变化趋势图，并支持清空重置与导出下载温度历史数据（CSV 格式）。
+5. **自适应全动态量程 (Auto Range)**：
+   - 算法根据当前画面内的实时最高温度与最低温度，自动动态拉伸并映射全色阶，确保微小温差也能清晰呈现丰富的层次细节。
+6. **表面发射率（Emissivity）校正**：
+   - 支持发射率 0.01 ~ 1.00 自由调节，针对金属、人体皮肤、粗糙或光滑表面进行准确的测温补偿。
+7. **多温标单位切换**：
+   - 支持**摄氏度 (℃)**、**华氏度 (℉)**、**开尔文 (K)**、**兰氏度 (°Ra)** 四种国际温标单位一键切换。
+8. **画面旋转与镜像**：
+   - 支持水平镜像、垂直镜像以及 90°、180°、270° 旋转，满足各种角度的固定安装或反向手持使用需求。
+9. **图像去噪与传感器校准**：
+   - **卡尔曼滤波**：平滑噪点，有效抑制温度数值跳动；
+   - **Gamma 曲线校正**：动态调整图像灰阶分布，突出低温区或高温区的层次细节；
+   - **传感器一致性校准**：用于消除画面不均匀底噪。**校准方法**：使用表面温度一致的物体（如平整硬纸板、桌面或墙面）平整遮挡住镜头前方，然后在【系统设置】中点击“传感器一致性校准”按钮，即可一键完成画面校准；
+   - **测温斜率与偏置微调**：支持对测温斜率（Slope）与温度偏置（Intercept）进行微调，方便专业用户进行精准测温补偿。
+10. **热像画面触控与手势快捷操作**：
+    - **【App 移动端 & Web 网页端】**：
+      - **垂直滑动（上下滑动）**：快速循环切换伪彩调色板（向下滑动切换下一个调色板，向上滑动切换上一个），屏幕上方即时弹出 HUD 动态胶囊提示；
+      - **水平滑动（左右滑动）**：快速循环切换重采样平滑滤波器（向右滑动切换下一个，向左滑动切换上一个），可在 `B-Spline`、`Lanczos3`、`Gaussian` 等 12 种算法间秒级对比画质效果；
+      - **单指点击 / 触碰任意位置**：直接将定点测温十字靶心精确定位到手指触碰位置，底栏实时读取并显示该坐标的精确测温数据；
+    - **【手持带屏机型实体屏幕】**：
+      - **上下滑动**：快速切换调色板；
+      - **左右滑动**：切换侧边数据信息栏停靠位置（在屏幕左侧或右侧互换停靠，方便左手或右手单手握持操作）；
+      - **单指点击**：在热像区域任意位置点击移动定点测温探针；
+      - **长按屏幕**：长按屏幕任意区域直接进入【系统设置】页面；
+      - **短按电源键**：画面冻结定格 / 继续实时流转（暂停与恢复）。
+11. **屏幕背光调节（带屏机型）**：
+    - 支持屏幕背光亮度无级调节（1% ~ 100%），灵活适应室内与户外强弱光环境。
+12. **多语言与现代化主题**：
+    - 提供简体中文、English 等多语言界面切换；
+    - 支持深色（Dark）与浅色（Light）主题自适应切换。
+13. **高清图片保存与 MP4 视频录制**：
+    - **一键截屏保存**：画面底栏支持一键点击“截屏”，高保真捕获包含测温标线与温度数值的热成像画面，自动保存为 PNG 图片至系统相册或下载目录；
+    - **实时视频录制**：支持一键点击“录制 MP4”启动热像动态视频录制，实时记录被测目标的温度动态变化过程，录制结束自动保存为标准 MP4 视频文件，便于实验分析、故障诊断报告与工程存档。
+14. **免硬件离线演示模式 (Demo Mode)**：
+    - App 端与 PC 上位机均内置物理热场数学模型。即使手头暂无热像仪硬件，点击“演示模式”即可直接体验高帧率热成像画面流转、手势切换调色板与算法滤波等全部功能。
 
-### Features
-- Good system compatibility, it can run on Windows, Mac, Linux, Android, IOS , ROS , etc.
-- Up to 5 clients can be displayed synchronously, and you can take a screenshot or record the screen to save the screen.
-- The available Wi-Fi is automatically scanned. You only need to open the web page and enter the password to complete the network configuration.
-- Provide up to 15 kinds of powerful algorithm support, bringing better display effect.
-- Provide up to 31 kinds of display color schemes, each color scheme has different display effects, and the color scheme can be flipped.
-- Support marking the highest temperature, the lowest temperature, and support fixed-point temperature measurement.
-- Support the adjustment of emissivity to measure the temperature of objects more accurately.
-- Supports gamma correction, which can enlarge the details of low temperature range or high temperature range.
-- Supports the display the frame rate, and the average frame rate can reach 7.0 FPS.
-- Supports the display of temperature curves for fixed-point and the download of temperature data, which is convenient for experimental observation.
-- Supports calibrate temperature manually by setting slope and intercept.
-- The screen supports left-right mirroring, up-down mirroring, and 360° rotation, which is convenient for installation or use at various angles.
-- Supports automatic setting of temperature measurement range or manual adjustment of temperature measurement range.
-- Firmware upgrade is supported.
-- The ultra-small product size.
-- The source code of the upper computer is provided, and the upper computer can be connected through USB and TCP, which is convenient for development.
+---
 
-### Environment
-Please install it in a safe area without explosive or flammable gas, and the equipment has no explosion-proof grade.
-Working environment: -20-85℃, humidity ≤95%RH, no frost.
-Storage environment: -20-85℃, humidity ≤95%RH, no frost.
+## 使用方式（客户端连接指南）
 
-<font color='orange'>
-Warning:
-Do not aim at the source of strong radiation Like welding arcs, sunlight, lasers! Otherwise, <font color='red'>irreversible damage</font> may be caused to the sensor!
-</font>
+系统支持三种主要的使用方式：
 
+### 1. 局域网网页在线查看
 
-### Performance Parameters
-- Sensor pixels: 32*32 (1024 pixels)
-- Field of view: 33°*33°
-- Frame rate: 7.0 FPS
-- Temperature range: -20°C to >1000°C
-- Temperature measurement accuracy: For pixels within the radiation radius, take the larger value of "the difference between the target temperature and the ambient temperature multiplied by 3%" or "plus or minus 3 Kelvin"
-- The farthest temperature measurement distance: depending on the size of the heating area, the temperature measurement of the human body can reach about 5m.
+适用于电脑、平板、iPhone、iPad、Android 手机等任何带有现代浏览器的设备（全平台免安装应用）。
 
-## Primary Usage
-After this module is powered on, it’s works in AP mode, use your device to scan the surrounding Wi-Fi, you will see an open hotspot named "INFRAED- XXXXXX" in the Wi-Fi list.
+1. **无线开机连接**：
+   - 模块通电后，会自动启动一个 Wi-Fi 热点，热点名称通常为 `INFRARED-xxxxxx`（无密码，直接连接即可）；
+2. **浏览器直接访问**：
+   - 连接成功后，打开设备上的浏览器，访问：
+     - `http://192.168.4.1`
+     - 或访问 mDNS 域名：`http://openthermal.local`
+   - 设备内置 DNS 捕获服务，直接打开任意网页也会自动跳转至控制台。页面加载后即可在线实时显示热成像画面，并可在界面上直接切换调色板、调整滤波器及发射率参数。
+3. **配置连接路由器（可选局域网在线查看）**：
+   - 如果希望热像仪接入室内局域网，在网页控制台中打开【系统设置】->【网络与连接 / 无线局域网】；
+   - 在列表中选择周围可用的 Wi-Fi 并输入密码，点击保存；
+   - 配网成功后，同一局域网内的任何电脑、手机直接访问设备被分配的 IP 或 `http://openthermal.local` 即可在线查看。
+4. **扩展管理功能**：
+   - 网页端左上角展开抽屉导航，支持**文件管理**（浏览与导出板载 LittleFS 存储数据）、**温度数据统计**以及为带屏机型制作并下发个性化**开机画面**（BootScreen）。
 
-<div align=center><img src="./assets/apname.jpg"></div>
- 
-Connect it. After the connection is complete, type http://192.168.4.1 into your browser, wait for the web page to load, and the thermal imaging screen will be displayed.
+---
 
-<div align=center><img src="./assets/indexpage.jpg"></div>
+### 2. Windows 桌面客户端
 
-The bottom shows the average temperature and frame rate in the field of view. In the default mode, the cursor automatically finds the highest temperature and the lowest temperature in the screen as the temperature range, and automatically marking the positions of the highest temperature and the lowest temperature.
+提供流畅稳定的桌面端热像显示与参数调试功能。
 
-## Local Area Network
-When your device is directly connected to the module, your device may not be able to access the Internet, so it is recommended that you use the module in Wi-Fi station mode. It can be connected to a router when used indoors, and can be connected to a mobile phone hotspot when used portable.
+1. **启动程序**：双击运行 [`windows/OpenThermal.exe`](windows/OpenThermal.exe)（位于 [`windows/`](windows/) 目录下）；
+2. **USB 有线直连（推荐）**：
+   - 用 Type-C 数据线将热像仪有线连接到电脑；
+   - 在软件连接界面中选择对应的 COM 端口，波特率保持默认（921600），点击“连接”；
+3. **Wi-Fi 无线网络连接**：
+   - 确保电脑已连接热像仪自带的 Wi-Fi 热点，或两者处于同一局域网中；
+   - 选择网络连接模式，输入热像仪 IP（直连热点时默认为 `192.168.4.1`），点击“连接”。
 
-After directly connecting the module, open your browser and enter http://192.168.4.1/wifi to enter the network configuration page. At this point, a list of available Wi -Fis will be displayed on the web page.
+---
 
-<div align=center><img src="./assets/wifilist.jpg" width="50%" height="50%" ></div>
+### 3. Android 手机客户端
 
-Please select the Wi-Fi which you want connect to, enter the password, click the “Save”, and when a notification pops up indicating that the network distribution is successful. 
+便携随身测温方案，手机即插即用。
 
-The hotspot named as"INFRAED- XXXXXX" in your device will disappear after a few seconds. And a new hotspot named as "INFRAED-[IP ADDRDSS] " will be appear (but you can’t connect to it).
-indicating that it has successfully connected to the Wi-Fi. Otherwise, the connection has failed.
+1. **安装 APK**：
+   - 将安装包 [`android/OpenThermal.apk`](android/OpenThermal.apk) 安装到安卓手机上（分架构包可在 [`android/`](android/) 目录下获取）；
+2. **Type-C OTG 有线直连（推荐）**：
+   - 使用双头 Type-C OTG 数据线将热像仪连接至手机充电口；
+   - 手机弹出 USB 设备访问权限请求窗口，勾选允许并确认，打开 App 即可直接显示实时热像画面；
+   - *提示：若手机未能识别外接热像仪，请在手机系统设置中确认已开启【OTG】功能；*
+3. **Wi-Fi 无线模式**：
+   - 手机连入热像仪自带的 Wi-Fi 热点，打开 App 即可直接通过无线网络在线查看热像画面；
+4. **免硬件离线演示模式**：
+   - 若手头暂未连接热像仪硬件，打开 App 后在主界面直接点击“演示模式”，即可启动内置的动态热场数学模型，体验高帧率热成像画面流转、手势切换调色板与算法滤波等全部功能。
 
-You only need to configure the network once. If you want to change the configuration data later, you can reopen the configuration page to configure the network.
+---
 
-## Device Discovery
-After the network configuration is completed, You have several ways to access it. Of course, the premise is that it is under the same local area network.
+## 常用参数调节建议
 
-- In the last chapter we mentioned a new hotspot named as "INFRAED-[IP ADDRDSS]" will be appear when the module connect to a Wi-Fi, and you can use this "IP ADDRDSS" to access the webpage.
+| 参数项 | 推荐设置 | 说明与使用场景 |
+| :--- | :--- | :--- |
+| **调色板 (Palette)** | `Ironbow`（铁红） / `Rainbow`（彩虹） | 综合观察最直观；查找微小温差推荐 `Rainbow`，夜间观察暗处推荐 `White-Hot`（白热）。 |
+| **滤波器 (Filter)** | `B-Spline`（B样条插值） | 平滑度和边缘过渡平衡较好；需要突出热点细节时可选用 `Lanczos3`。 |
+| **发射率 (Emissivity)** | 常见材料见下 | 测量不同物体表面时请按材质调整：<br>• 人体皮肤 / 水面 / 冰面：`0.98`<br>• 哑光油漆 / 橡胶 / 塑料：`0.90 ~ 0.95`<br>• 氧化粗糙金属：`0.50 ~ 0.70`<br>• 抛光高亮金属（铜/铝）：`0.10 ~ 0.20` |
+| **卡尔曼滤波强度** | 默认开启 (50) | 画面噪点较多或环境温差微弱时可适当调大，抑制闪烁噪点。 |
+| **Gamma 对比度** | `1.0`（正常） | 测量高温物体周围细节时可调小至 `0.7`；观察低温微弱温差时可调大至 `1.4`。 |
 
-- If the device you are using supports the mDNS function, such as IOS, Mac, Windows (with chrome kernel browser), or devices with Android 12 system or above. You can directly enter http://infrared.local/ in your browser to access the module. If the device you are using does not support the mDNS function, you can access the device by installing mDNS software. mDNS function is not available when using the proxy software , it is recommended to try after closing the proxy software.
+---
 
-- If the module has screen, you can enter the setting page and scan the QR code to access webpage.
- 
-## Parameter setting
-Press and hold any position on the thermal imaging screen for more than 2 seconds to enter the parameter setting page.
-<div align=center><img src="./assets/parameter1.png"><img src="./assets/parameter2.png"><img src="./assets/parameter3.png"></div>
+## 安全与使用注意事项
 
-### Color style
-In the infrared-Serial, different temperature levels are displayed as different colors, so that the temperature can be visually distinguished. This module supports up to 31 color schemes. And each scheme supports color flipping.
+1. **严禁强辐射源直射**：
+   - **绝对禁止将镜头直接对准太阳、焊接电弧、大功率激光等极端辐射源**，否则会导致红外热电堆传感器受到永久性不可逆损伤！
+2. **镜头清洁保护**：
+   - 红外光学透镜表面有精密光学镀膜，请避免手指直接触摸镜头或被尖锐物体划伤。如需清洁，请使用专用的气吹或镜头擦拭纸轻轻拭去浮尘。
+3. **测温距离与视场说明**：
+   - 测温距离与被测发热物体的面积相关，目标发热面积在画面中占有的像素越多，测温准确度越高。
 
-<div align=center><img src="./assets/colorstyle.png"></div>
+---
 
-The figure below shows the display effect under different color schemes. There are too many color schemes, so we don’t want to show too much.
-<div align=center><img src="./assets/color_figure.jpg"></div>
+## DIY
 
-### Temperature Label
-Coldest / Highest / Fixure temperature points in the screen can be highlighted, and the temperature can be displayed. Turning on the Fixure, tap a certain position on the main screen to display the temperature at that position. And the temperature will show in Chart.
+本章节面向喜爱折腾的极客玩家，介绍配套单文件量产工具 [`烧录工具.exe`](烧录工具.exe) 的使用方法、设备密钥备份位置、自行刷写 DIY 固件后的重新烧录恢复，以及硬件开发资料的获取。
 
-<div align=center><img src="./assets/templable.png"></div>
+### 1. 烧录工具使用方式
 
-### Chart
-This module supports the function of recording the temperature curve of a certain point in the screen. If the “Fixed measurement” is not enabled, the temperature at the center point of the screen will be recorded. If the “Fixure” function is enabled, the temperature curve of that point will be recorded. Temperature data can be reset or downloaded.
-<div align=center><img src="./assets/chart.png"></div>
+用于自行刷入 DIY 固件、恢复官方出厂固件或设备维护：
 
-### Rotation / Mirror
-The module supports horizontal mirroring, vertical mirroring, and 90°, 180°, 270° rotating images. It is convenient for you to install and use at all angles.
-<div align=center><img src="./assets/rotate.png"><img src="./assets/mirror.png"></div>
+1. **设备连接**：
+   - 使用 Type-C 数据线将热像仪连接至电脑；
+   - 若电脑未能自动识别端口，请检查电脑是否已安装 USB 串口驱动，或打开电脑【设备管理器】查看端口（COM 和 LPT）连接与识别状态；
+2. **启动烧录**：
+   - 双击运行发布包根目录下的 [`烧录工具.exe`](烧录工具.exe)；
+3. **一键烧录**：
+   - 在界面中选择需要刷写的固件文件；
+   - 点击界面下方的“**一键烧录**”按钮，工具将自动完成全套固件与文件系统的写入；
+4. **全盘擦除（可选）**：
+   - 界面提供了红色的“**擦除芯片**”按钮，用于彻底擦除彻底清空芯片全盘。
 
-### Temperature Units
-The module supports switching between 4 temperature scale, namely Celsius, Fahrenheit, Kelvin, and Rankine.
-<div align=center><img src="./assets/tempscale.png"></div>
+---
 
-### Screen
-You can use it to adjust the brightness of the screen and the amount of minute it automatically turns off . Of course, The premise is that you have a screen…
-<div align=center><img src="./assets/screen.png"></div>
+### 2. 密钥备份与保存位置
 
-### Filter
-The module provides up to 15 kinds of smoothing filters. Although the pixel of the sensor is only 32*32, the module has a built-in powerful algorithm to interpolate the picture to higher pixels through the smoothing filter to provide better display effect. Different smoothing filters have different display effects, which users can experience by themselves. Generally use the B-Spline filter.
-<div align=center><img src="./assets/filter.png"></div>
+每台设备出厂时均包含专属的芯片识别认证与校准数据（存储于芯片内部 NVS 分区，一机一份）。在自行刷写 DIY 固件前，强烈建议先完成备份：
 
-The following figure shows the display effect with different filter
-<div align=center><img src="./assets/filterimage.jpg"></div>
+1. **如何备份密钥**：
+   - 设备连接电脑后，在 [`烧录工具.exe`](烧录工具.exe) 界面中直接点击“**备份密钥**”按钮；
+   - 软件会自动从芯片中读取专属密钥和校准数据并完成备份；
+2. **备份后的密钥在哪个文件夹**：
+   - 备份生成的密钥文件名为 **`nvs_backup.bin`**；
+   - 该文件会**保存在与 [`烧录工具.exe`](烧录工具.exe) 相同的目录下**（即工具所在的当前文件夹）。请妥善保管此文件。
 
-### Emissivity
-Emissivity refers to the ratio of the energy radiated from the surface of an object to the energy radiated by a black body at the same temperature. (A black body is an idealized radiator that can radiate all energy, and its surface emissivity is 1.00) The emissivity of various substances is determined by the object's own material, surface roughness, surface geometry, shooting angle, It is determined by the wavelength and the temperature of the object itself (the material of the object itself is a factor that has the greatest influence on the emissivity of the object), so at the same temperature, different materials will radiate different energy.
-Highly polished metal surfaces, such as copper or aluminum, typically have an emissivity below 0.10. Rough or oxidized metal surfaces have higher emissivity (0.6 or greater, depending on surface condition and amount of oxidation). Most flat paints are about 0.90, while human skin and water are about 0.98.
-<div align=center><img src="./assets/emissivity.png"></div>
+---
 
-The module supports the adjustment of the emissivity, and the user can search for the emissivity of the object that needs accurate temperature measurement to achieve a better measurement effect.
+### 3. 自行刷写 DIY 固件后如何重新烧录恢复
 
-### Gamma
-Gamma correction is used to adjust the high temperature range or low temperature range of the temperature scale, so as to enlarge the details of the high temperature range or low temperature range, so as to achieve a better effect of finding the heat source.
-<div align=center><img src="./assets/gamma.png"></div>
+当您自行刷写了第三方或自制 DIY 固件后，如果需要重新烧回官方固件或恢复出厂系统：
 
-If the gamma parameter is enlarged, the details of the low-temperature range will be more obvious. If the gamma parameter is reduced, the details of the high-temperature range will be more obvious. The following figure shows the effect of adjusting the gamma parameter under the default color scheme, the left figure The gamma parameter of is 2.0, and the gamma parameter of the right picture is 0.5.
-<div align=center><img src="./assets/gamma_image.png"></div>
+1. **放回备份密钥**：
+   - 确保之前备份好的 **`nvs_backup.bin` 文件放置在与 [`烧录工具.exe`](烧录工具.exe) 相同的目录下**；
+2. **自动识别与回填**：
+   - 运行 [`烧录工具.exe`](烧录工具.exe)，将设备连接至电脑；
+   - 烧录工具在启动和检测到芯片时，会自动扫描同目录下的 `nvs_backup.bin`，并在秒级内自动校验并回填原厂授权与校准参数，无需手动输入；
+3. **重新烧录**：
+   - 选择对应的产品型号，直接点击“**一键烧录**”，即可一键完美恢复至官方出厂系统。
 
-### Karman
-By setting the Kalman filter to improve image quality stability, the smaller the parameter Q and the larger the parameter R, the higher the stability of the image. However, this leads to a poorer transient response to temperature changes, making it suitable for capturing stationary objects with minimal temperature variation. To reduce image quality delay, the Kalman filter is turned off by default (if either Q or R is set to 0, the filter is disabled). The recommended parameters are: [Q: 1.0, R: 0.5].
-<div align=center><img src="./assets/karman.png"></div>
+---
 
-### Calibration
-The temperature measured by thermal imaging is for reference only. It will be affected by various factors in actual use. The module supports manual adjustment of intercept and slope . If the user has the conditions to measure the real temperature curve of the object to be measured and the thermal imaging module in the corresponding situation In the temperature curve, the temperature curve of the two can be fitted to a straight line by the least square method, and then the slope and intercept can be set so that the temperature measurement straight line of the thermal imaging module is basically consistent with the real temperature straight line, and the calibration can be completed.(For example, if the measured temperature is 1 degree lower than the actual temperature, the intercept is set to +1, and if it is 1 degree higher, it is set to -1. The slope generally does not need to be set.)
+### 4. 硬件原理图获取
 
-In addition, individual pixels may have some temperature drift. This deviation can be calibrated by shielding the sensor with an object with a consistent temperature and clicking the “Calibration” button.
-<div align=center><img src="./assets/calibration.png"></div>
+如需深入了解硬件外设引脚定义、电路设计或进行硬件二次开发，**硬件原理图等相关开发资料可以联系客服免费领取**。
 
-### Visit webpage
-When your device and this module are in the same LAN, You can access the website by scanning the QR code. This page will also display the SSID and IP address.
+---
 
-The slider below the QR code indicates how long it will take for the WiFi to be automatically turned off if there is no WiFi connection. Turning on WiFi will increase heat and power consumption.
-<div align=center><img src="./assets/webpage.png"></div>
+## 历史资料归档
 
-### Language
-This module supports several languages, you can switch to the language you are familiar with.
-<div align=center><img src="./assets/language.png"></div>
-  
-### Factory reset
-Long press this button to do a factory reset and reboot.
-<div align=center><img src="./assets/reset.png"></div>
+早期的固件镜像、文档已统一归档至 `archive/v2.x.x/` 目录供参考。
 
-### So where can buy it?
-Please scan the QR code below or click the link below to go directly to the official store ^^
-<div align=center><img src="./assets/shop.png"></div>
-<div style="text-align: center;">
-  <a href="https://shop237247974.taobao.com/" target="_blank">Click here to go directly to the link 🚀</a>
+---
+
+## 官方购买渠道
+
+如需购买官方正品硬件、外壳镜头配件或定制模块，请扫描下方二维码或点击链接直达官方淘宝店铺：
+
+<div align="center">
+  <img src="./assets/shop.png" width="35%" alt="官方淘宝店铺二维码" />
+  <p><a href="https://shop237247974.taobao.com/" target="_blank">点击这里链接直达 🚀</a></p>
 </div>
 
-### Other
-**If you are a developer and want to do secondary development, please read the developer manuals: [Developer Manauals](develop/README.md)**
+---
 
-### Contact
-E-mail: chenqt123@qq.com
+## 开源声明
+
+本项目正在积极开发中，源代码将于固件版本稳定后正式开源（计划于 2027 年年内开源发布，或达到 300 颗 Star 立刻开源 😏）。
