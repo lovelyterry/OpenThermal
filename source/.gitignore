@@ -1,0 +1,11 @@
+# PlatformIO
+.pio/
+.vscode/
+
+# Build outputs
+firmware/
+*.map
+
+# Python
+__pycache__/
+*.py[cod]
